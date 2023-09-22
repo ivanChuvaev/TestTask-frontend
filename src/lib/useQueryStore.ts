@@ -10,6 +10,7 @@ type MyQueryStorage = {
 const newValue = { v: {} as Partial<MyQueryStorage> }
 const isNextTickSet = { v: false }
 
+/** url query params store */
 export function useQueryStore() {
   const router = useRouter()
   const value = computed<MyQueryStorage>(() => ({

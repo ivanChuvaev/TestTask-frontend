@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import Inspector from '@/components/Inspector.vue'
-import axios from 'axios'
 import ImageViewer from '@/components/ImageViewer.vue';
 import { useQuery } from "@tanstack/vue-query";
 import { computed } from 'vue';
@@ -12,16 +11,22 @@ const path = usePath()
 
 const query = useQuery(
   [path],
-  () => axios.get(`${window.location.protocol}//${window.location.hostname}:${import.meta.env.VITE_BACKEND_PORT}/get-content?path=${path.value}`),
+  async () => {
+    const response = await fetch(`${window.location.protocol}//${window.location.hostname}:${import.meta.env.VITE_BACKEND_PORT}/get-content?path=${path.value}`)
+    const responseParsed = await response.json();
+    if (response.status !== 200) {
+      throw new Error(JSON.stringify(responseParsed))
+    }
+    return responseParsed
+  },
   {
     retry: false,
     refetchOnWindowFocus: false,
     onError: (e: any) => {
-      // on error move up and display error message
       const newPickedPath = path.value.replace(/\/[^\/]*$/, '')
       if (newPickedPath !== path.value) {
         path.value = newPickedPath;
-        alert(e.message);
+        alert(e);
       }
     }
   }
@@ -29,11 +34,11 @@ const query = useQuery(
 
 const directories = computed<string[]>(() => {
   if (query.data.value === undefined) return []
-  return query.data.value.data.directories
+  return query.data.value.directories
 })
 const files = computed<string[]>(() => {
   if (query.data.value === undefined) return []
-  return query.data.value.data.files
+  return query.data.value.files
 })
 const images = computed(() => {
   return files.value.filter(v => {

@@ -3,10 +3,8 @@ import { RouterView } from 'vue-router'
 import { Button, Dropdown, Menu, MenuItem } from 'ant-design-vue';
 import { DownOutlined } from '@ant-design/icons-vue'
 import { useGlobalStore } from './stores/global';
-import { useQueryStore } from './lib/useQueryStore';
 import { useViewMode } from './lib';
 const globalStore = useGlobalStore()
-const queryStore = useQueryStore();
 const mode = useViewMode();
 </script>
 
@@ -53,7 +51,6 @@ const mode = useViewMode();
     display: flex;
     flex-direction: column;
     gap: 0;
-    // background: #ffffff;
     min-height: 100%;
     min-width: 100%;
   }
